@@ -59,7 +59,8 @@ def clear_documents(train, test):
 
     # Convert the result to nampy array
     tfidf_train_data_features = tfidf_train_data_features.toarray()
-    #print('Features = ', tfidf_train_data_features.shape)  # (25000, 48)
+    
+    print('Features = ', tfidf_train_data_features.shape)  # (25000, 48)
 
     # Take a look at the words in the vocabulary
     tfidf_vocab = tfidf_vectorizer.get_feature_names()

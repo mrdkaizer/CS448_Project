@@ -12,6 +12,7 @@ def kfold(x, y, max_n):
     best_n = 0
 
     for n in range(1, max_n):
+        print('Running knn kfold: ', n, ' / ', max_n, end='\r')
         knn = KNeighborsClassifier(n_neighbors=n, n_jobs=-1)
         kfold = model_selection.KFold(n_splits=10)
         accuracy = model_selection.cross_val_score(knn, x, y, cv=kfold)
