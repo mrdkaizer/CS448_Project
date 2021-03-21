@@ -21,3 +21,23 @@ test_data_features = data_features[train.shape[0]:]
 knn_fit = knn.train(train_data_features, train["SECTION"], 12)
 y_predict = knn.predict(test_data_features, knn_fit)
 print(y_predict)
+
+import xlsxwriter
+
+# Create a workbook and add a worksheet.
+workbook = xlsxwriter.Workbook('output.xlsx')
+worksheet = workbook.add_worksheet()
+
+
+# Start from the first cell. Rows and columns are zero indexed.
+row = 1
+col = 0
+
+# Iterate over the data and write it out row by row.
+worksheet.write(0,0,'SECTION')
+for y in y_predict:
+    worksheet.write(row, col,     y)
+    row += 1
+
+
+workbook.close()

@@ -1,15 +1,17 @@
 import pandas as pd
 import re
 
+
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 from sklearn import metrics
 
-train = pd.read_csv("../dataset/Data_Train.csv", header=0, delimiter=",", quoting=2)
-all_document=''
+train = pd.read_csv("../dataset/Data_Train.csv", header=0, delimiter=",", quoting = 2)
+all_document = ''
 
 stemmer = SnowballStemmer('english')
 stops = set(stopwords.words("english"))
+
 
 def clear_text(input_text):
 
@@ -28,7 +30,8 @@ def clear_text(input_text):
     #
     # 5. Join the words back into one string separated by space,
     # and return the result.
-    return(" ".join( stemmed_meaningful_words)) 
+    return(" ".join( stemmed_meaningful_words))
+
 
 # Get the number of reviews based on the dataframe column size
 length = train["STORY"].size
@@ -61,22 +64,30 @@ print('Features = ', tfidf_train_data_features.shape) # (25000, 48)
 # Take a look at the words in the vocabulary
 tfidf_vocab = tfidf_vectorizer.get_feature_names()
 
+
+
+
+
+
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import model_selection
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+
+
 best_accuracy = 0
-best_n=0
+best_n = 0
 
 for n in range(1, 20):
     print('Running KNeighborsClassifier: ', n, '/ 20', end='\r')
     knn = KNeighborsClassifier(n_neighbors=n, n_jobs=-1)
     kfold = model_selection.KFold(n_splits=10)
     accuracy = model_selection.cross_val_score(knn, tfidf_train_data_features, train["SECTION"], cv=kfold)
-    if best_accuracy<accuracy.mean():
+    if best_accuracy < accuracy.mean():
         best_accuracy = accuracy.mean()
-        best_n=n
+        best_n = n
 
 knn = KNeighborsClassifier(n_neighbors=best_n, n_jobs=-1)
 model = knn.fit(tfidf_train_data_features, train["SECTION"])
