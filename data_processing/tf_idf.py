@@ -49,7 +49,7 @@ def clear_documents(train, test):
     # Initialize the "TfidfVectorizer" object, which is scikitlearn's tf/idf tool.
     tfidf_vectorizer = TfidfVectorizer(max_df=1.0, \
                                        max_features=25000, \
-                                       min_df=0.01, \
+                                       min_df=0.00, \
                                        stop_words=None, \
                                        use_idf=True, \
                                        tokenizer=None, \
