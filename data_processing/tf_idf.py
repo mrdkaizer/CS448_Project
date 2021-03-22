@@ -47,12 +47,12 @@ def clear_documents(train, test):
         clean_train.append(clear_text(test[i]))
 
     # Initialize the "TfidfVectorizer" object, which is scikitlearn's tf/idf tool.
-    tfidf_vectorizer = TfidfVectorizer(max_df=1.0, \
-                                       max_features=25000, \
-                                       min_df=0.00, \
-                                       stop_words=None, \
-                                       use_idf=True, \
-                                       tokenizer=None, \
+    tfidf_vectorizer = TfidfVectorizer(max_df=1.0,
+                                       max_features=5000,
+                                       min_df=0.00,
+                                       stop_words=None,
+                                       use_idf=True,
+                                       tokenizer=None,
                                        ngram_range=(1, 3))
     # Tf-idf-weighted term-document sparse matrix
     tfidf_train_data_features = tfidf_vectorizer.fit_transform(clean_train)

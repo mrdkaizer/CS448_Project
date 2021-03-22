@@ -1,6 +1,6 @@
 import pandas as pd
 from data_processing import tf_idf, svd
-from ml_algorithms import knn
+from ml_algorithms import knn, mlp
 from plot import show_plot
 
 train = pd.read_csv("dataset/Data_Train.csv", header=0, delimiter=",", quoting=2)
@@ -10,23 +10,35 @@ test = pd.read_csv("dataset/Data_Test.csv", header=0, delimiter=",", quoting=2)
 data_features, vocab = tf_idf.clear_documents(train["STORY"], test['STORY'])
 
 # dimensionality reduction
-plot_accuracy = []
-for f in range(2, 100):
-    reduced_features = svd.reduction(f, data_features)
+# plot_accuracy = []
+# for f in range(2, 100):
+#     reduced_features = svd.reduction(f, data_features)
+#
+#     train_data_features = reduced_features[:train.shape[0]]
+#     test_data_features = reduced_features[train.shape[0]:]
+#
+#     # knn kfold
+#     best_accuracy, best_n = knn.kfold(train_data_features, train["SECTION"], 20)
+#     print('best accuracy: ', best_accuracy)
+#     print('best neighbors: ', best_n)
+#     plot_accuracy.append(best_accuracy)
+#
+# show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy')
 
-    train_data_features = reduced_features[:train.shape[0]]
-    test_data_features = reduced_features[train.shape[0]:]
-
-    # knn kfold
-    best_accuracy, best_n = knn.kfold(train_data_features, train["SECTION"], 20)
-    print('best accuracy: ', best_accuracy)
-    print('best neighbors: ', best_n)
-    plot_accuracy.append(best_accuracy)
-
-show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy')
 
 
+reduced_features = svd.reduction(6, data_features)
+train_data_features = reduced_features[:train.shape[0]]
+test_data_features = reduced_features[train.shape[0]:]
 
+best_accuracy, best_hidden_layer_size = mlp.kfold(train_data_features, train["SECTION"], 400)
+print('best accurancy:', best_accuracy)
+print('best hidden lays ', best_hidden_layer_size)
+mlp_fit = mlp.train(train_data_features, train["SECTION"], 300, best_hidden_layer_size)
+y_predict = knn.predict(test_data_features, mlp_fit)
+
+# y_predict = knn.predict(test_data_features, knn_fit)
+# print(y_predict)
 # best_n is 12
 # best_n = 19
 
@@ -37,22 +49,22 @@ show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy
 
 
 
-# import xlsxwriter
+import xlsxwriter
 
-# # Create a workbook and add a worksheet.
-# workbook = xlsxwriter.Workbook('output.xlsx')
-# worksheet = workbook.add_worksheet()
-
-
-# # Start from the first cell. Rows and columns are zero indexed.
-# row = 1
-# col = 0
-
-# # Iterate over the data and write it out row by row.
-# worksheet.write(0,0,'SECTION')
-# for y in y_predict:
-#     worksheet.write(row, col,     y)
-#     row += 1
+# Create a workbook and add a worksheet.
+workbook = xlsxwriter.Workbook('output.xlsx')
+worksheet = workbook.add_worksheet()
 
 
-# workbook.close()
+# Start from the first cell. Rows and columns are zero indexed.
+row = 1
+col = 0
+
+# Iterate over the data and write it out row by row.
+worksheet.write(0,0,'SECTION')
+for y in y_predict:
+    worksheet.write(row, col,     y)
+    row += 1
+
+
+workbook.close()
