@@ -6,7 +6,7 @@ def kfold(x, y):
     best_accuracy = 0
     best_criterion = ''
     best_splitter = ''
-    dtc_criterion = ['gini', 'poly']
+    dtc_criterion = ['gini', 'entropy']
     dtc_spliter = ['best', 'random']
     for spliter in dtc_spliter:
         for criterion in dtc_criterion:
