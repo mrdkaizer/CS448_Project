@@ -1,6 +1,6 @@
 import pandas as pd
 from data_processing import tf_idf, svd
-from ml_algorithms import knn, mlp, svm
+from ml_algorithms import knn, mlp, svm, dtc
 from plot import show_plot
 
 train = pd.read_csv("dataset/Data_Train.csv", header=0, delimiter=",", quoting=2)
@@ -67,11 +67,19 @@ train_data_features = reduced_features[:train.shape[0]]
 test_data_features = reduced_features[train.shape[0]:]
 
 
-best_accuracy, best_kernel = svm.kfold(train_data_features, train["SECTION"])
-print('best accurancy:', best_accuracy)
-print('best kernel:', best_kernel)
-svm_fit = svm.train(train_data_features, train["SECTION"], best_kernel)
-y_predict = svm.predict(test_data_features, svm_fit)
+# best_accuracy, best_kernel = svm.kfold(train_data_features, train["SECTION"])
+# print('best accurancy:', best_accuracy)
+# print('best kernel:', best_kernel)
+# svm_fit = svm.train(train_data_features, train["SECTION"], best_kernel)
+# y_predict = svm.predict(test_data_features, svm_fit)
+
+
+best_accuracy, best_criterion, best_splitter = dtc.kfold(train_data_features, train["SECTION"])
+print('best accurancy: ', best_accuracy)
+print('best best criterion: ', best_criterion)
+print('best best splitter', best_splitter)
+dtc_fit = dtc.train(train_data_features, train["SECTION"], best_splitter, best_criterion)
+y_predict = svm.predict(test_data_features, dtc_fit)
 
 
 import xlsxwriter
