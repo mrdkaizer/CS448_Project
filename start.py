@@ -70,7 +70,7 @@ test_data_features = reduced_features[train.shape[0]:]
 best_accuracy, best_kernel = svm.kfold(train_data_features, train["SECTION"])
 print('best accurancy:', best_accuracy)
 print('best kernel:', best_kernel)
-svm_fit = mlp.train(train_data_features, train["SECTION"], best_kernel)
+svm_fit = svm.train(train_data_features, train["SECTION"], best_kernel)
 y_predict = svm.predict(test_data_features, svm_fit)
 
 
