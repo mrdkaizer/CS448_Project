@@ -1,6 +1,6 @@
 import pandas as pd
 from data_processing import tf_idf, svd
-from ml_algorithms import knn, mlp
+from ml_algorithms import knn, mlp, svm
 from plot import show_plot
 
 train = pd.read_csv("dataset/Data_Train.csv", header=0, delimiter=",", quoting=2)
@@ -27,26 +27,24 @@ data_features, vocab = tf_idf.clear_documents(train["STORY"], test['STORY'])
 
 
 # dimensionality reduction MLP
-plot_accuracy = []
-for f in range(2, 100):
-    reduced_features = svd.reduction(f, data_features)
+# plot_accuracy = []
+# for f in range(2, 100):
+#     reduced_features = svd.reduction(f, data_features)
+#
+#     train_data_features = reduced_features[:train.shape[0]]
+#     test_data_features = reduced_features[train.shape[0]:]
+#
+#     # knn kfold
+#     best_accuracy, best_n = mlp.kfold(train_data_features, train["SECTION"], 600)
+#     print('best accuracy: ', best_accuracy)
+#     print('best neighbors: ', best_n)
+#     plot_accuracy.append(best_accuracy)
+#
+# show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy')
+#
 
-    train_data_features = reduced_features[:train.shape[0]]
-    test_data_features = reduced_features[train.shape[0]:]
-
-    # knn kfold
-    best_accuracy, best_n = mlp.kfold(train_data_features, train["SECTION"], 600)
-    print('best accuracy: ', best_accuracy)
-    print('best neighbors: ', best_n)
-    plot_accuracy.append(best_accuracy)
-
-show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy')
 
 
-
-reduced_features = svd.reduction(20, data_features)
-train_data_features = reduced_features[:train.shape[0]]
-test_data_features = reduced_features[train.shape[0]:]
 
 # best_accuracy, best_hidden_layer_size = mlp.kfold(train_data_features, train["SECTION"], 400)
 # print('best accurancy:', best_accuracy)
@@ -64,6 +62,17 @@ test_data_features = reduced_features[train.shape[0]:]
 # y_predict = knn.predict(test_data_features, knn_fit)
 # print(y_predict)
 
+reduced_features = svd.reduction(20, data_features)
+train_data_features = reduced_features[:train.shape[0]]
+test_data_features = reduced_features[train.shape[0]:]
+
+
+best_accuracy, best_kernel = svm.kfold(train_data_features, train["SECTION"])
+print('best accurancy:', best_accuracy)
+print('best kernel:', best_kernel)
+svm_fit = mlp.train(train_data_features, train["SECTION"], best_kernel)
+y_predict = svm.predict(test_data_features, svm_fit)
+
 
 import xlsxwriter
 
@@ -79,7 +88,7 @@ col = 0
 # Iterate over the data and write it out row by row.
 worksheet.write(0,0,'SECTION')
 for y in y_predict:
-    worksheet.write(row, col,     y)
+    worksheet.write(row, col, y)
     row += 1
 
 
