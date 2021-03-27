@@ -9,7 +9,7 @@ test = pd.read_csv("dataset/Data_Test.csv", header=0, delimiter=",", quoting=2)
 # tf-idf
 data_features, vocab = tf_idf.clear_documents(train["STORY"], test['STORY'])
 
-# dimensionality reduction
+# dimensionality reduction KNN
 # plot_accuracy = []
 # for f in range(2, 100):
 #     reduced_features = svd.reduction(f, data_features)
@@ -26,16 +26,34 @@ data_features, vocab = tf_idf.clear_documents(train["STORY"], test['STORY'])
 # show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy')
 
 
+# dimensionality reduction MLP
+plot_accuracy = []
+for f in range(2, 100):
+    reduced_features = svd.reduction(f, data_features)
 
-reduced_features = svd.reduction(6, data_features)
+    train_data_features = reduced_features[:train.shape[0]]
+    test_data_features = reduced_features[train.shape[0]:]
+
+    # knn kfold
+    best_accuracy, best_n = mlp.kfold(train_data_features, train["SECTION"], 600)
+    print('best accuracy: ', best_accuracy)
+    print('best neighbors: ', best_n)
+    plot_accuracy.append(best_accuracy)
+
+show_plot(plot_accuracy, range(2, 100), 'number of features', 'training accuracy')
+
+
+
+reduced_features = svd.reduction(20, data_features)
 train_data_features = reduced_features[:train.shape[0]]
 test_data_features = reduced_features[train.shape[0]:]
 
-best_accuracy, best_hidden_layer_size = mlp.kfold(train_data_features, train["SECTION"], 400)
-print('best accurancy:', best_accuracy)
-print('best hidden lays ', best_hidden_layer_size)
-mlp_fit = mlp.train(train_data_features, train["SECTION"], 300, best_hidden_layer_size)
-y_predict = knn.predict(test_data_features, mlp_fit)
+# best_accuracy, best_hidden_layer_size = mlp.kfold(train_data_features, train["SECTION"], 400)
+# print('best accurancy:', best_accuracy)
+# print('best hidden lays ', best_hidden_layer_size)
+# best_hidden_layer_size=300
+# mlp_fit = mlp.train(train_data_features, train["SECTION"], 600, best_hidden_layer_size)
+# y_predict = knn.predict(test_data_features, mlp_fit)
 
 # y_predict = knn.predict(test_data_features, knn_fit)
 # print(y_predict)
@@ -45,8 +63,6 @@ y_predict = knn.predict(test_data_features, mlp_fit)
 # knn_fit = knn.train(train_data_features, train["SECTION"], best_n)
 # y_predict = knn.predict(test_data_features, knn_fit)
 # print(y_predict)
-
-
 
 
 import xlsxwriter

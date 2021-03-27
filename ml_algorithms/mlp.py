@@ -4,12 +4,11 @@ from sklearn.model_selection import train_test_split
 
 
 def kfold(x, y, max_iters):
-    print('test from kfold ')
     best_accuracy = 0
     best_hidden_layer_size = 0
 
-    for hidden_layer_size in range(200, 500, 50):
-        print('Running mlp kfold: ', hidden_layer_size, ' / ', 500)
+    for hidden_layer_size in range(200, 600, 50):
+        print('Running mlp kfold: ', hidden_layer_size, ' / ', 600, end='\r')
         mlp = MLPClassifier(random_state=1, max_iter=max_iters, hidden_layer_sizes=hidden_layer_size)
         kfold = model_selection.KFold(n_splits=10)
         accuracy = model_selection.cross_val_score(mlp, x, y, cv=kfold)
