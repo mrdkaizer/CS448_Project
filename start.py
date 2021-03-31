@@ -1,6 +1,6 @@
 import pandas as pd
 from data_processing import tf_idf, svd
-from ml_algorithms import knn, mlp, svm, dtc
+from ml_algorithms import knn, mlp, svm, dtc, kmeans
 from plot import show_plot
 
 train = pd.read_csv("dataset/Data_Train.csv", header=0, delimiter=",", quoting=2)
@@ -74,12 +74,15 @@ test_data_features = reduced_features[train.shape[0]:]
 # y_predict = svm.predict(test_data_features, svm_fit)
 
 
-best_accuracy, best_criterion, best_splitter = dtc.kfold(train_data_features, train["SECTION"])
-print('best accurancy: ', best_accuracy)
-print('best best criterion: ', best_criterion)
-print('best best splitter', best_splitter)
-dtc_fit = dtc.train(train_data_features, train["SECTION"], best_splitter, best_criterion)
-y_predict = svm.predict(test_data_features, dtc_fit)
+# best_accuracy, best_criterion, best_splitter = dtc.kfold(train_data_features, train["SECTION"])
+# print('best accurancy: ', best_accuracy)
+# print('best criterion: ', best_criterion)
+# print('best splitter', best_splitter)
+# dtc_fit = dtc.train(train_data_features, train["SECTION"], best_splitter, best_criterion)
+# y_predict = svm.predict(test_data_features, dtc_fit)
+
+labels, kmeans_fit = kmeans.train(train_data_features)
+y_predict = kmeans.test(test_data_features, kmeans_fit)
 
 
 import xlsxwriter
