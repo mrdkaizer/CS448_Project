@@ -31,9 +31,11 @@ def clear_text(input_text):
 
 
 def clear_documents(train, test):
+
     # Get the number of reviews based on the dataframe column size
     length_train = train.size
-    length_test = test.size
+    if test!=None:
+        length_test = test.size
 
     # Initialize an empty list to hold the clean reviews
     clean_train = []
@@ -42,9 +44,10 @@ def clear_documents(train, test):
     # the length of the movie review list
     for i in range(length_train):
         clean_train.append(clear_text(train[i]))
-
-    for i in range(length_test):
-        clean_train.append(clear_text(test[i]))
+        
+    if test!=None:
+        for i in range(length_test):
+            clean_train.append(clear_text(test[i]))
 
     # Initialize the "TfidfVectorizer" object, which is scikitlearn's tf/idf tool.
     tfidf_vectorizer = TfidfVectorizer(max_df=1.0,

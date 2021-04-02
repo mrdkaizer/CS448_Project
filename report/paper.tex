@@ -1,0 +1,106 @@
+\documentclass[sigconf]{acmart}
+\usepackage[english, greek]{babel}
+\usepackage{url}
+\usepackage{epsfig}			        % add support for `EPS' figures
+\usepackage{epstopdf}			    % automatic `EPS' to `PDF' conversion
+\usepackage[T1]{fontenc}		    % enable `Type 1' fonts
+\usepackage{graphicx}			    % add support for graphics
+\usepackage{listings}			    % add support for source code listings
+\usepackage{tikz}			        % add support for custom graphics
+\usepackage{verbatim}			    % better `verbatim'
+\usepackage{xcolor}			        % add support for color names
+\usepackage{xspace}			        % proper macro spacing
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+% name, title, keywords
+\def\pname{webFuzz}
+\def\wfuzz{Wfuzz}
+\def\ptitle{Προβλέψη κατηγορίων σε άρθρα ειδήσεων}
+
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\cmark}{\ding{51}}%
+
+\def\commentsenabled{}
+% comment commands
+\ifdefined\commentsenabled
+\newcommand{\el}[1]{\textbf{\color[rgb]{1,0,0} demetris: #1}}
+\newcommand{\ovr}[1]{\textbf{\color[rgb]{0,0,1} erotokritos: #1}}
+\newcommand{\mac}[1]{\textbf{\color[rgb]{0,1,0} koromias: #1}}
+\else
+\newcommand{\el}[1]{}
+\fi
+
+% listings setup
+\lstset{
+	backgroundcolor	= \color{white},
+	basicstyle	= \scriptsize,
+	breaklines	= true,
+	captionpos	= b,
+	commentstyle = \color{gray}\ttfamily,
+	frame		= lines, 
+	language	= C++, 
+	numbers		= left,
+	tabsize		= 2,
+	xleftmargin	= 8pt,
+}
+
+
+% listings setup for php
+% adapted from https://tex.stackexchange.com/questions/53928/is-there-a-good-definition-for-highlighting-php-code-in-listings#answer-54687
+
+\definecolor{dkgreen}{rgb}{0,.6,0}
+\definecolor{dkblue}{rgb}{0,0,.6}
+\definecolor{dkyellow}{cmyk}{0,0,.8,.3}
+
+\lstset{
+  language        = php,
+  backgroundcolor	= \color{white},
+  basicstyle	= \scriptsize,
+  breaklines	= true,
+  captionpos	= b,
+  commentstyle = \color{gray}\ttfamily,
+  frame		= lines, 
+  numbers		= left,
+  tabsize		= 2,
+  xleftmargin	= 8pt,
+  keywordstyle    = \color{dkblue},
+  stringstyle     = \color{red},
+  identifierstyle = \color{dkgreen},
+  emph            =[1]{php},
+  emphstyle       =[1]\color{black},
+  emph            =[2]{if,and,or,else},
+  emphstyle       =[2]\color{dkyellow}
+}
+
+% checkmark
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+
+% hacks
+\newenvironment{code}{\small\verbatim}{\endverbatim\normalsize}
+\newcommand{\note}[1]{\noindent\textbf{\color{red}[#1]}}
+\newcommand{\commentout}[1]{}
+
+% custom macros
+\newcommand{\ie}{\emph{i.e.,}\xspace}
+\newcommand{\eg}{\emph{e.g.,}\xspace}
+\newcommand{\etc}{\emph{etc.}\xspace}
+
+
+\author{\textlatin{Demetris Kaizer}}
+\title{\ptitle}
+
+\begin{document}
+
+\input{abstract}
+
+\maketitle
+
+\input{introduction}
+
+% bibliography
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{paper}
+
+\end{document}

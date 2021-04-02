@@ -1,0 +1,26 @@
+\begin{abstract}
+
+Software testing is a promising technique for discovering unknown
+vulnerabilities in programs. In particular, software testing has been realized
+in the form of \emph{fuzzing} of native code, where software is exercised using
+a vast amount of inputs for inferring if any of them introduces
+security-related side effects. For instance, a program crash when processing a
+given input may be a signal for memory-corruption vulnerability.
+
+Although fuzzing is significantly evolved in analyzing native code, web
+applications have received limited attention, so far. In this paper, we design,
+implement and evaluate \pname{}, which is, to the best of our knowledge, the
+first \emph{gray-box} fuzzer for web applications. \pname{}, before analyzing a
+web application, carefully instruments all executing code in order to create a
+\emph{feedback loop} between the fuzzer and the analyzed software. \pname{}
+supports instrumenting PHP and HACK applications.
+
+Moreover, we provide the first attempt for automatically synthesizing
+reflective Cross-site Scripting (XSS) vulnerabilities in vanilla web
+applications. Using an additional instrumentation pass, we can successfully
+inject XSS bugs in web apps and then instruct \pname{} to discover them. We
+demonstrate both bug injection and \pname{} using WordPress and Drupal. \pname{} 
+can successfully discover our injected bugs faster than other black-box fuzzers.
+
+\end{abstract}
+

@@ -7,25 +7,24 @@ def kfold(x, y):
     best_criterion = ''
     best_splitter = ''
     dtc_criterion = ['gini', 'entropy']
-    dtc_spliter = ['best', 'random']
-    for spliter in dtc_spliter:
+    dtc_splitter = ['best', 'random']
+    for splitter in dtc_splitter:
         for criterion in dtc_criterion:
-            print('Running dtc kfold: ', criterion, ' / ', dtc_criterion, end='\r')
-            print('Running dtc kfold: ', spliter, ' / ', dtc_spliter, end='\r')
-            dtc = DecisionTreeClassifier(splitter=spliter, criterion=criterion)
+            print('Running dtc kfold with criterion: ', criterion, ', and splitter: ', splitter, end='\r')
+            dtc = DecisionTreeClassifier(splitter=splitter, criterion=criterion)
             kfold = model_selection.KFold(n_splits=10)
             accuracy = model_selection.cross_val_score(dtc, x, y, cv=kfold)
             if best_accuracy < accuracy.mean():
                 best_accuracy = accuracy.mean()
                 best_criterion = criterion
-                best_splitter = spliter
+                best_splitter = splitter
 
     return best_accuracy, best_criterion, best_splitter
 
 
-def train(x_train, y_train, spliter, criterion):
+def train(x_train, y_train, splitter, criterion):
 
-    dtc = DecisionTreeClassifier(splitter=spliter, criterion=criterion)
+    dtc = DecisionTreeClassifier(splitter=splitter, criterion=criterion)
     # train mlp object using x_train and y_train
     dtc.fit(x_train, y_train)
     return dtc

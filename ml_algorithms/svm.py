@@ -8,7 +8,7 @@ def kfold(x, y):
     best_kernel = ''
     svm_kernel = ['linear', 'poly', 'rbf']
     for kernel in svm_kernel:
-        print('Running svc kfold: ', kernel, ' / ', svm_kernel, end='\r')
+        print('Running svc kfold with ', kernel, end='\r')
         svc = SVC(kernel=kernel)
         kfold = model_selection.KFold(n_splits=10)
         accuracy = model_selection.cross_val_score(svc, x, y, cv=kfold)

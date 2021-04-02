@@ -1,0 +1,25 @@
+Reduced Dataset to 20 dimensions.
+
+
+KNN:
+    Best Neighbors: 6
+    Best Training Accuracy: 0.9559
+
+MLP:
+    Best Hidden Layer Neurons: 80
+    Best Training Accuracy: 0.9610
+
+SVM:
+    Best Kernel: RBF
+    Best Accuracy: 0.9575
+
+Decision Tree:
+    Best Criterion: Entropy
+    Best Splitter: Best
+    Best Accuracy: 0.9306
+
+Random Forest:
+    Best Criterion: Gini
+    Best Max Depth: 450
+    Best Accuracy: 0.9598
+

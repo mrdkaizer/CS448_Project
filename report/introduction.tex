@@ -1,0 +1,144 @@
+\section{Introduction}
+
+In recent years, fuzzing has become an essential part for discovering bugs in software. Automated software testing
+or fuzzing is the process of generating or mutating inputs and feeding them to programs for the purpose of discovering
+bugs. All along, there was the need for an automated way to discover bugs in software but what really sparked the
+interest for fuzzing was the introduction of AFL~\cite{zalewski2015american}, the state-of-the-art fuzzer that produces feedback 
+during fuzzing by leveraging instrumentation of the analyzed program. By creating this \emph{feedback loop}, fuzzers can greatly improve their performance as they  
+can determine whether an input is interesting, namely it triggers a new code path, and use that input to produce other test 
+cases.  
+
+%Problem
+Software testing plays a significant role in software development cycle because when vulnerabilities
+are present, they can have severe consequences. By exploiting software bugs, adversaries can perform
+data breaches, install malicious malware or even take complete control of a device. However, finding bugs before they 
+become exploits is possible while also being a challenging task. Mainly because bugs are triggered when an unexpected input 
+is given to the program, something which is difficult to fully simulate through statically written unit tests~\cite{aschermann2019nautilus}.
+
+Additionally, while automated software testing has become an attractive field of research, it still has a long way to go, 
+especially for web applications ~\cite{doupe2010johnny}. As the Internet infrastructure progresses, it can be noted that an 
+increasing number of software written in native code, migrates to web applications. As a result, this attracts more attackers to 
+target web applications in order to achieve their goals. Thus, there is a growing need for development of automated 
+vulnerabilities scanners that target web applications as well as for automated vulnerabilities injection tools to evaluate the former.
+
+%Others have done
+Numerous fuzzers have been developed in the past few years that try to optimize the fuzzing process by proposing
+various methodologies~\cite{aschermann2019redqueen,aschermann2019nautilus,stephens2016driller,rawat2017vuzzer,
+osterlund2020parmesan,godefroid2005dart,godefroid2012sage}. For instance, most of the fuzzers take 
+advantage of instrumentation on the source or binary level. That is, inserting code to the program in order to 
+receive feedback when a code block gets triggered and try to adjust the generated inputs to improve code coverage. 
+Others utilize concolic/symbolic execution in order to extract useful information about the program and use that 
+information for improving the input generation process~\cite{stephens2016driller,godefroid2005dart,godefroid2012sage}. 
+However, all these fuzzers are currently targeted towards finding 
+vulnerabilities in native code, while web applications have received limited attention.
+%The evolution of fuzzing native code, so far, has not been observed in the web-applications domain.
+
+%Technical stuff
+In this paper, we propose \pname{}, which is, to the best of our knowledge, the
+first \emph{grey-box} fuzzer for web applications. Currently available fuzzers
+for web applications act in a black-box fashion~\cite{doupe2010johnny}; they
+just brute force the target with URLs that embed known web-attack
+payloads. In contrast, \pname{} firstly instruments a web application by
+%modifying its Abstract Syntax Tree(AST) by 
+adding code that tracks all control
+flows triggered by an input and notifies the fuzzer, accordingly. Notifications can be embedded
+in the web application's HTTP response using custom headers or can be outputted to a shared file 
+or memory region.
+%When the instrumentation procedure is done, 
+On the other hand, the fuzzer starts sending requests to the target and
+analyzes the responses in order to realize any interesting requests that would
+later help to improve the code coverage and as a result, trigger  
+vulnerabilities nested deep in the web application's code.
+
+Instrumentation of the analyzed program is \emph{key} to the fuzzing process,
+since it allows the fuzzer to instantiate more efficient strategies for
+mutating inputs and thus explore as much as possible of the code of the
+application. For native applications, instrumentation is carried out at the
+intermediate representation of the application's code (e.g., at the LLVM's IR),
+where the source code is available, or directly to the
+binary~\cite{zalewski2015american}. For web applications, instrumentation is
+challenging, since (a) several different frameworks are used to realize web
+applications, (b) applications are executed through a web server and (c) there
+is no standard intermediate representation of web code. \pname{} applies all
+instrumentation at the abstract-syntax tree layer of PHP applications and can
+also instrument at the HHVM layer applications written in Hack\cite{hhvm}.
+Therefore, our instrumentation can cover a significant amount of available web
+code, while it is generic enough  -- labeling basic blocks, collecting
+feedback, and embedding feedback using HTTP headers or other shared resources
+are all entirely transparent features that are PHP/Hack agnostic -- to be applied on other
+systems, assuming the underlying tools for processing code are available.
+
+Evaluating fuzzing is another challenging task~\cite{klees2018Evaluation},
+since migrating known vulnerabilities to existing software, in order to test
+the capabilities of the fuzzer in finding bugs, can be a tedious
+process~\cite{bug-reproduction}. Thus, for evaluating \pname{}, but also other
+fuzzers for web applications, we develop a methodology for automatically
+injecting bugs in web applications written in PHP.  Our methodology is inspired
+by LAVA~\cite{dolan2016lava} and targets web applications instead of native
+code. Injecting vulnerabilities in web code, again, is challenging, since
+important tools used for analyzing native code and injecting vulnerabilities
+(e.g., taint-tracking and information-flow frameworks), are not available for
+web applications. To overcome this lack of available tools, our vulnerability
+injection methodology leverages the instrumentation infrastructure we use for
+building \pname{}, in the first place.
+
+
+%Our tool is able to
+%inject bugs to web applications that when triggered can lead to Reflected Cross-Site Scripting (RXSS).
+
+%Additionally, we evaluate \pname{} using WordPress~\cite{wordpress} by injecting bugs through our automated bug injection tool. 
+%Our analysis suggests that \pname{} can successfully discover most of our injected bugs.
+
+
+\subsection{Contributions}
+In this paper, we make the following contributions.
+
+\begin{enumerate}
+
+\item We design, implement and evaluate \pname{}, the first grey-box fuzzer
+realized for discovering vulnerabilities in web applications.  \pname{}
+applies instrumentation on the target web application for guiding the entire
+fuzzing process.
+Instrumentation can be applied on the AST level of PHP-based or on the HHVM
+bytecode on Hack-based web applications for creating a \emph{feedback loop} and
+utilizing it in order to increase code coverage. This feedback loop is
+established using HTTP custom headers. Consequently, by leveraging the feedback
+loop, \pname{} increases the number of potential vulnerabilities triggered.
+
+\item We design and implement a methodology for automated bug injection in web
+applications written in PHP. For injecting artificially created
+vulnerabilities, we crawl \pname{}-based instrumented applications and we
+insert bugs in places that can be potentially executed. Our bug-injection
+methodology is \emph{not only} essential for evaluating \pname{} but also
+vital for the progression of further research in vulnerability finding for
+web software.
+
+\item We thoroughly evaluate \pname{} in terms of coverage, throughput and
+efficiency in finding unknown bugs.  For better understanding the measured
+capabilities of \pname{} we compare our results with three existing
+web-application fuzzers. \pname{} is the only fuzzer that reports coverage
+information; in particular, \pname{} can cover about 21.5\% of the entire
+WordPress code, which contains around \emph{half a million} LoCs, in 50 hours
+of fuzzing. As expected, \pname{} is slower, in terms of throughput, due to the
+involved instrumentation. In fact, another popular fuzzer, \wfuzz{}~\cite{wfuzz} is
+three times faster when fuzzing Drupal, but this is something to be
+expected, since the reduction of the throughput due to the instrumentation
+pays off in increased coverage in the long run. Finally, \pname{}, compared to the
+other three fuzzers, finds the most injected vulnerabilities (30 with the
+second one being \wfuzz{} with 28) for a fuzzing session that lasts 65 hours.
+
+%using WordPress by injecting bugs through our automated bug injection tool. Our analysis suggests that \pname{} can successfully discover most of our injected bugs.
+
+\item To foster further research in the field, we release all of our
+contributions, namely the toolchain for instrumenting PHP/Hack applications,
+the actual fuzzer, and the toolchain for injecting bugs in web applications, as
+open source.
+
+\end{enumerate}
+
+%\noindent
+%We will release the code of both \pname{} and the automated bug injection tool as open source.
+
+
+
+

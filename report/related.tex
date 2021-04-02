@@ -1,0 +1,78 @@
+\section{Related Work}
+\label{sec:related}
+%In this section, we present the various fuzzing methodologies that have been realised over the last few years
+%and discuss how our work differentiate from the existing ones. In addition, we discuss other proposed tools for 
+%automatically injecting vulnerabilities in programs.
+ 
+
+\paragraph{Generic Fuzzing}
+Fuzzing has been realized through various techniques and algorithms over the years. Firstly, we have the black-box 
+fuzzers~\cite{woo2013scheduling,sparks2007automated,householder2012probability} which are not aware of the fuzz target's 
+internals and thus are trying to trigger vulnerabilities 
+by randomly generating the inputs. While the fuzzers in this category might not perform as well as others, they offer 
+the benefit of being compatible with any program~\cite{rawat2017vuzzer,osterlund2020parmesan}. Next, we have 
+the white- and grey-box fuzzers that leverage instrumentation in order to receive feedback regarding the inputs' 
+accuracy in exploring new paths. It is established that 
+the feedback is crucial for a fuzzer's performance since it can be used in order to guide the fuzzer towards exploring new code 
+paths, resulting in a better code coverage also known as coverage-based fuzzers~\cite{zalewski2015american}. 
+Otherwise, we have the directed-based fuzzers that utilize
+feedback in order to direct the fuzzer towards specific execution paths ~\cite{godefroid2005dart}.
+The state-of-the-art grey-box fuzzer is AFL~\cite{zalewski2015american} which is a coverage-based fuzzer and is considered the basis for 
+most of the recent proposed works. That being said, AFL fails to intelligently produce inputs in order to explore deep paths
+in programs that are hidden behind checksums or magic numbers ~\emph{if} statements. For this reason, recent research work utilize symbolic 
+and concolic execution in order to improve the input generation process by extracting useful information about the program. 
+Some examples consist of DRILLER~\cite{stephens2016driller}, DART~\cite{godefroid2005dart} and SAGE~\cite{godefroid2012sage}.
+Despite all these attempts to improve the fuzzing process, it has been observed that symbolic/concolic execution based fuzzers suffer from
+scalability issues because when fuzzing large targets, we notice a scenario of state explosion. Consequently, some other research proposals
+try to achieve what symbolic/concolic execution based fuzzers offer with a less expensive approach. One example is
+REDQUEEN~\cite{aschermann2019redqueen} that utilizes the input-to-state correspondence in order to infer the values that would be later
+used and try control them. Another such example is VUzzer~\cite{rawat2017vuzzer}, an application-aware evolutionary fuzzer that leverages 
+control and data-flow features using static and dynamics analysis to infer fundamental properties of the fuzz target. 
+
+
+\paragraph{Web-app Fuzzing}
+Although a great effort has been given in order to develop fuzzers that detect bugs in native 
+code,  web applications vulnerabilities have received 
+little attention. In addition, the existing solutions that target web application vulnerabilities are mostly black-box and as a result 
+they perform poorly since they are not able to detect vulnerabilities that are located deep within the web application 
+~\cite{doupe2010johnny,bau2010state}. One example is SecuBat~\cite{kals2006secubat}, a web vulnerability scanner that
+uses a black-box approach to detect SQL injection and XSS vulnerabilities. Also another such example is KameleonFuzz~
+\cite{duchene2014kameleonfuzz}, a black-box fuzzer for web vulnerabilities targeting
+XSS exploits. Additionally,  there have been some attempts that try to overcome the shortcomings of black-box approaches. 
+For example, Doup{\'e} et al.~\cite{doupe2012enemy} proposed a way to navigate through a web application's states in order to infer whether an 
+input is interesting just by noticing the changes of the output. Alternatively, we have the white-box approaches that have access to the 
+source code of the web application. For example, Kieyzun et al.~\cite{kieyzun2009automatic} proposed a technique that utilizes
+information about the code to automatically generate inputs that target SQLI and XSS vulnerabilities. Also,
+Artzi et al.~\cite{artzi2010finding} developed another tool for discovering web application vulnerabilities by utilizing 
+information about the target, extracted through concrete and symbolic execution.
+Despite white-box approaches being able to perform better than black-box approaches as they have access to the internals of the target being
+fuzzed, black-box approaches are more scalable as the source code might not be always available.
+Finally, web vulnerability scanners have also been realized through static analysis tools. Some examples are firstly  
+Pixy~\cite{jovanovic2010static} which uses static analysis at the source code level in order to detect any vulnerable code. Also, another tool 
+that combines static and dynamic analysis is Saner~\cite{balzarotti2008saner} which tries to identify any sanitization processes that do not
+work as expected and as a result, let attackers introduce exploits. In contrast with all the aforementioned research
+work for identifying web vulnerabilities, our technique follows the grey-box approach. Namely, \pname{}, instruments
+the fuzz target in order to receive feedback whether a generated input is interesting. These inputs, are later used for generating
+other test cases that could result in a better code coverage and therefore, possibly triggering more vulnerabilities.
+
+
+
+
+\paragraph{Vulnerability Injection}
+When evaluating automated vulnerability scanners, there is this great need of ground truth corpora. Namely, programs that have 
+realistic vulnerabilities in known places which can be triggered when a specific input is given to the program. An example of such effort
+is Juliet~\cite{black2018juliet}, a suite that consists of thousands of small programs in C/C++ and Java, that contain various 
+vulnerabilities (e.g., buffer overflows, NULL pointer dereference). Another example of such suite is BugBox~\cite{nilson2013bugbox}, 
+a vulnerability corpus for PHP web applications. However, these examples are pre-defined sets of vulnerable programs, that while
+being helpful for evaluating vulnerability scanners, they cannot simulate real world scenarios because of their small size.  In contrast,
+automated bug injection tools can simulate real world scenarios because they are capable of injecting bugs in real-world programs. Main 
+example of such tool and the inspiration of our automated bug injection tool is LAVA~\cite{dolan2016lava} which can automatically synthesize 
+and inject thousands of bugs in native code programs.  Some other examples include SolidiFI~\cite{ghaleb2020effective}, an automated
+vulnerability injection tool targeted for evaluating smart contracts and EvilCoder~\cite{pewny2016evilcoder}, a framework that finds and
+modifies potentially vulnerable source code. Finally, Liang et al.~\cite{liang2020automated} presented DRInject, a tool for injecting 
+realistic data race bugs directly into programs' source code.
+
+
+
+
+
